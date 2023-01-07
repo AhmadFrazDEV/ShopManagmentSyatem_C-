@@ -1,0 +1,448 @@
+// =========================  Program.cs ==========================================
+
+using System;
+using static System.Console; 
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using coffe_shop.menu.UI;
+using coffe_shop.folder.dl;
+using System.Threading.Tasks;
+using coffe_shop11.folder.BL;
+
+namespace coffe_shop
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string path = "E:\\C# Projects\\VIVA\\shop\\Data.txt";
+            if(class_item_dl.readDataFromFile(path))
+            {
+                WriteLine("Successfully Read");
+            }
+            int op = 0;
+            do
+            {
+                op = MENU_UI.menu();
+                if (op == 1)
+                {
+                    
+                    class_item_dl.add_in_list();
+                    class_item_dl.addDataIntoFile(path);
+
+                }
+                else if (op == 2)
+                {
+                    class_item_dl.cheapest_item();
+                }
+                else if (op == 3)
+                {
+                    class_item_dl.drink_menu();
+                }
+                else if (op == 4)
+                {
+                    class_item_dl.food_menu();
+                }
+                else if (op == 5)
+                {
+                    class_item_dl.show_items();
+                    WriteLine();
+                    coffe_shop_dl.orders_in_list();
+
+                }
+                else if (op == 6)
+                {
+                    coffe_shop_dl.fullfill_order();
+                }
+                else if (op == 7)
+                {
+                    coffe_shop_dl.orders_added();
+                }
+                else if (op == 8)
+                {
+                    float result = coffe_shop_dl.calculte_bill();
+                    WriteLine("YOUR BILL IS =" + result);
+                }
+                ReadKey();
+                Clear();
+            }
+            while (op != 9);
+
+
+        }
+    }
+}
+
+//================================= cass_item_ui.cs =======================================
+
+using System;
+using static System.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using coffe_shop.folder.BL;
+using System.Threading.Tasks;
+
+namespace coffe_shop.folder.UI
+{
+    internal class class_item_ui
+    {
+        public static class_item_bl add_items()
+        {
+            class_item_bl data = new class_item_bl();
+            Write("enter name of item: ");
+            string name = ReadLine();
+            data.setname(name);
+
+            Write("enter item type: ");
+            string item_type = ReadLine();
+            data.setitem_type(item_type);
+
+            Write("enter price of item: ");
+            int price = int.Parse(ReadLine());
+            data.setprice(price);
+
+           return data;
+        } 
+        
+
+    }
+}
+
+
+//================================= coffe_shop_dl.cs ======================================
+
+using System;
+using static System.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using coffe_shop.folder.UI;
+using coffe_shop.folder.BL;
+using coffe_shop11.folder.BL;
+using System.Threading.Tasks;
+
+namespace coffe_shop.folder.dl
+{
+    internal class coffe_shop_dl
+    {
+        public static coffe_shop_bl data1 = new coffe_shop_bl();
+        public static List<coffe_shop_bl> do_orders = new List<coffe_shop_bl>();
+
+
+        public static void orders_in_list()
+        {
+            bool flag = false;
+            data1 = coffe_shop_ui.take_orders();
+
+            for (int i = 0; i < class_item_dl.items_data.Count; i++)
+            {
+                if (data1.getorder() == class_item_dl.items_data[i].getname())
+                {
+                    WriteLine("YES! THIS ITEM EXISTS IN THE MENU");
+                    do_orders.Add(data1);
+                    flag = true;
+                    break;
+                }
+
+            }
+            if (flag == false)
+            {
+                WriteLine("not exists");
+            }
+        }
+        public static void fullfill_order()
+        {
+            for (int i = 0; i < do_orders.Count; i++)
+            {
+                WriteLine("your " + do_orders[i].getorder() + " is ready ! ");
+            }
+        }
+        public static void orders_added()
+        {
+            WriteLine("\tYOUR ORDERS NAME ARE......");
+            for (int i = 0; i < do_orders.Count; i++)
+            {
+
+                WriteLine(do_orders[i].getorder());
+
+            }
+        }
+        public static float calculte_bill()
+        {
+            int bill = 0;
+            for (int i = 0; i < class_item_dl.items_data.Count; i++)
+            {
+                if (do_orders[i].getorder() == class_item_dl.items_data[i].getname())
+                {
+                    bill = bill + class_item_dl.items_data[i].getprice();
+                }
+            }
+            return bill;
+
+        }
+    }
+}
+
+
+//================================= cass_item_dl.cs =======================================
+
+using System;
+using static System.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using coffe_shop11.folder.BL;
+using coffe_shop.folder.UI;
+using coffe_shop.folder.BL;
+using System.Threading.Tasks;
+
+namespace coffe_shop.folder.dl
+{
+     class class_item_dl
+    {
+        
+       public static coffe_shop_bl d = new coffe_shop_bl();
+       public static List<class_item_bl> items_data = new List<class_item_bl>();
+        public static List<class_item_bl> newListForReading = new List<class_item_bl>();
+       public static class_item_bl s = new class_item_bl();
+        public static void add_in_list()
+        {
+            items_data.Add(class_item_ui.add_items());
+        }
+
+        public static void  addDataIntoFile(string path)
+        {
+            StreamWriter file = new StreamWriter(path, true);
+            for (int i = 0; i < items_data.Count; i++)
+            {
+                file.WriteLine(items_data[i].getname() + "," + items_data[i].getitem_type() + "," + items_data[i].getprice());
+                file.Flush();
+            }
+            file.Close();
+        }
+        
+        public static bool readDataFromFile(string path)
+        {
+            StreamReader f = new StreamReader(path);
+            string record;
+            if (File.Exists(path))
+            {
+                while ((record = f.ReadLine()) != null)
+                {
+                    string[] splittedRecord = record.Split(',');
+                    string P_name = splittedRecord[0];
+                    string P_type = splittedRecord[1];
+                    int P_price = int.Parse(splittedRecord[2]);
+                    
+                    class_item_bl s = new class_item_bl(P_name , P_type , P_price);
+                    addIntoList(s);
+                }
+                f.Close();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public static void addIntoList(class_item_bl s)
+        {
+            newListForReading.Add(s);
+        }
+
+           public static void show_items()
+           {
+                WriteLine("NAME\t\tTYPE\t\tPRICE");
+                foreach(class_item_bl s in items_data) 
+                {
+                    WriteLine(s.getname() + "\t\t" +s.getitem_type() + "\t\t" + s.getprice());
+                }
+
+           } 
+        public static void cheapest_item()
+        {
+            WriteLine("NAME\t\tTYPE\t\tPRICE");
+            for (int i = 0; i < items_data.Count; i++)
+            {
+                if (class_item_dl.items_data[i].getprice() < 200)
+                {
+                    WriteLine(class_item_dl.items_data[i].getname() + "\t\t" + class_item_dl.items_data[i].getitem_type() + "\t\t" + class_item_dl.items_data[i].getprice());
+                }
+            }
+        }
+        public static void drink_menu()
+        {
+            WriteLine("NAME\t\tTYPE\t\tPRICE");
+            for (int i = 0; i <class_item_dl.items_data.Count; i++)
+            {
+                if (class_item_dl.items_data[i].getitem_type() == "drink")
+                {
+                    WriteLine(class_item_dl.items_data[i].getname() + "\t\t" + class_item_dl.items_data[i].getitem_type() + "\t\t" + class_item_dl.items_data[i].getprice());
+                }
+            } 
+        } 
+        public static void food_menu()
+        {
+            WriteLine("NAME\t\tTYPE\t\tPRICE");
+            for (int i = 0; i < class_item_dl.items_data.Count; i++)
+            {
+                if (class_item_dl.items_data[i].getitem_type() == "food")
+                {
+                    WriteLine(class_item_dl.items_data[i].getname() + "\t\t" + class_item_dl.items_data[i].getitem_type() + "\t\t" + class_item_dl.items_data[i].getprice());
+                }
+            }
+        } 
+        
+
+
+
+    }
+ }
+ 
+
+//================================= coffe_shop_ui.cs ======================================
+
+using System;
+using static System.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using coffe_shop11.folder.BL;
+using System.Threading.Tasks;
+
+namespace coffe_shop.folder.UI
+{
+    internal class coffe_shop_ui
+    { 
+        
+        public static coffe_shop_bl take_orders()
+        {
+
+            coffe_shop_bl data = new coffe_shop_bl();
+            WriteLine("ENTER NAME OF ITEM");
+            string name= ReadLine();
+            data.setorder(name);
+            string shop = "Tesha";
+            return data;
+        }  
+        
+    }
+}
+
+
+//================================= coffe_shop_bl.cs ======================================
+
+using System;
+using static System.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using coffe_shop.folder.BL;
+using System.Threading.Tasks;
+
+namespace coffe_shop11.folder.BL
+{
+    internal class coffe_shop_bl
+    {
+        public string shop_name = "";
+          private string order ;
+
+        public string getorder() { return order; }
+        public void setorder(string order) { this.order = order; }
+
+        public coffe_shop_bl()
+        {
+
+        } 
+        public coffe_shop_bl(string shop_name,string order)
+        {
+            this.order = order; 
+        }
+       
+    }
+}
+
+
+//================================= class_item_bl.cs ======================================
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace coffe_shop.folder.BL
+{
+    internal class class_item_bl
+    {
+        private string name;
+        private string item_type;
+        private int price;
+
+        public string getname() { return name; }
+        public void setname(string name) { this.name = name; }
+
+        public string getitem_type() { return item_type; }
+        public void setitem_type(string item_type) { this.item_type = item_type; }
+
+        public int getprice() { return price; }
+        public void setprice(int price) { this.price = price; }
+
+        public  class_item_bl()
+        {
+
+        } 
+
+        public class_item_bl(string name , string type , int price)
+        {
+            this.name = name;
+            item_type = type;
+            this.price = price;
+        }
+      
+    }
+}
+
+
+//================================= MENU_UI.cs ============================================
+
+using System;
+using static System.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace coffe_shop.menu.UI
+{
+    internal class MENU_UI
+    {
+       
+        public static int menu()
+        {
+           
+            WriteLine();
+           
+            WriteLine();
+            WriteLine("\t1.ADD A MENU ITEM ");
+            WriteLine("\t2.View the Cheapest Item in the menu");
+            WriteLine("\t3.View the Drink’s Menu");
+            WriteLine("\t4.View the Food’s Menu");
+            WriteLine("\t5.Add Order");
+            WriteLine("\t6.Fulfill the Order");
+            WriteLine("\t7.View the Orders’s List");
+            WriteLine("\t8.Total Payable Amount");
+            WriteLine("\t9.Exit");
+            WriteLine();
+            Write("enter option number:");
+            int num = int.Parse(ReadLine());
+            return num;
+        }
+
+    }
+}

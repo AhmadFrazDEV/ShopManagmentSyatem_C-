@@ -1,0 +1,15 @@
+F:\projects_for_viva\coffe_shop\obj\Debug\coffe_shop.csproj.AssemblyReference.cache
+F:\projects_for_viva\coffe_shop\obj\Debug\coffe_shop.csproj.CoreCompileInputs.cache
+F:\projects_for_viva\coffe_shop\bin\Debug\coffe_shop.exe.config
+F:\projects_for_viva\coffe_shop\bin\Debug\coffe_shop.exe
+F:\projects_for_viva\coffe_shop\bin\Debug\coffe_shop.pdb
+F:\projects_for_viva\coffe_shop\obj\Debug\coffe_shop.exe
+F:\projects_for_viva\coffe_shop\obj\Debug\coffe_shop.pdb
+F:\projects_for_viva\coffe_shop\obj\Debug\coffe_shop.csproj.SuggestedBindingRedirects.cache
+E:\C# Projects\VIVA\shop\coffe_shop\bin\Debug\coffe_shop.exe.config
+E:\C# Projects\VIVA\shop\coffe_shop\bin\Debug\coffe_shop.exe
+E:\C# Projects\VIVA\shop\coffe_shop\bin\Debug\coffe_shop.pdb
+E:\C# Projects\VIVA\shop\coffe_shop\obj\Debug\coffe_shop.csprojAssemblyReference.cache
+E:\C# Projects\VIVA\shop\coffe_shop\obj\Debug\coffe_shop.csproj.CoreCompileInputs.cache
+E:\C# Projects\VIVA\shop\coffe_shop\obj\Debug\coffe_shop.exe
+E:\C# Projects\VIVA\shop\coffe_shop\obj\Debug\coffe_shop.pdb
